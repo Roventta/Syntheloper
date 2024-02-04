@@ -65,5 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="src\memory\README.md" />
   </ItemGroup>
 </Project>
