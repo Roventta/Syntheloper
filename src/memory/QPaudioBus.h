@@ -50,16 +50,23 @@ private:
 	}
 
 	void freeListRemove(ChunkH* h) {
-		if (mFreeListStart == h) { mFreeListStart = nullptr; }
-
 		if (h->previousFree)
 			h->previousFree->nextFree = h->nextFree;
 		if (h->nextFree)
 			h->nextFree->previousFree = h->previousFree;
+
+		//if removing first, set the linked list start to be its next
+		if (mFreeListStart == h) {
+			mFreeListStart = h->nextFree;
+		}
 	}
 
 	void freeListAppend(ChunkH* header) {
 		//append to the start of the list
+
+		//if it already is the start, do nothing
+		if (mFreeListStart == header) { return; }
+
 		mFreeListStart->previousFree = header;
 		header->nextFree = mFreeListStart;
 		header->previousFree = nullptr;
@@ -105,8 +112,9 @@ public:
 		return size;
 	}
 
-	void FreeWalk() {
+	int FreeWalk() {
 		std::cout << "free linked list walk\n";
+		int size = 0;
 		ChunkH* current = mFreeListStart;
 		while (current!= nullptr) {
 			ChunkH* temp = reinterpret_cast<ChunkH*>(current);
@@ -114,11 +122,15 @@ public:
 			std::cout << "corresponding footer think size is " << H2F(temp)->size << "\n";
 			std::cout << "--------\n";
 			current = current->nextFree;
+
+			size += readHeaderSize(temp->data);
 		}
 		std::cout << std::endl;
-		return;
+		return size;
 
 	}
+
+	size_t getMDsize() { return mMDsize; }
 
 	void BusDestroy() { free(mPool); }
 

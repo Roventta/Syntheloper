@@ -147,9 +147,10 @@ end:
 	return 0;
 }
 
+
 int QPaudioBus::Init(size_t size)
 {
-	// inir free list as non
+	// init free list as non
 	mFreeListStart = nullptr;
 
 	POOLSIZE = size;
