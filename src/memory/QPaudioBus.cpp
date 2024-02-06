@@ -79,6 +79,9 @@ int QPaudioBus::Free(char* ptr)
 	bool mergeFlag = 0;
 	bool mergedLeft = 0;
 
+	//do noting to NULL
+	if (ptr == nullptr) { return -1; }
+
 	//check whether is a QPB pointer
 	if (ptr > getFence(1) || ptr < getFence(0)) { return -1; }
 

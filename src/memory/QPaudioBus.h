@@ -7,7 +7,7 @@
 //#define POOLSIZE 280
 
 struct ChunkH {
-	//contain size and free status, read them via bitmask
+	//contain size and free status, read them via bit mask
 	size_t data;
 	ChunkH* previousFree;
 	ChunkH* nextFree;
