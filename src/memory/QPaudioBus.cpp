@@ -33,15 +33,15 @@ void* QPaudioBus::Alloc(size_t size)
 				leftoverH.data = synthHeaderData(losize, (size_t)0);
 				ChunkF leftoverF;
 				leftoverF.size = losize;
-				writeChunk((char*)cur+mMDsize+size, leftoverH, leftoverF);
+				writeChunk((unsigned char*)cur+mMDsize+size, leftoverH, leftoverF);
 				//freelist insert
-				freeListAppend((ChunkH*) ((char*)cur+mMDsize+size));
+				freeListAppend((ChunkH*) ((unsigned char*)cur+mMDsize+size));
 
 				//reuse register as the allocated
 				leftoverH.data = synthHeaderData(size, (size_t)1);
 				leftoverF.size = size;
-				writeChunk((char*)cur, leftoverH, leftoverF);
-				return (char*)cur+sizeof(ChunkH);
+				writeChunk((unsigned char*)cur, leftoverH, leftoverF);
+				return (unsigned char*)cur+sizeof(ChunkH);
 			
 			}
 		}
@@ -65,12 +65,12 @@ void* QPaudioBus::Alloc(size_t size)
 	footer.size = size;
 
 	writeChunk(mPoolBuoy, header, footer);
-	char* out = mPoolBuoy + sizeof(ChunkH);
+	unsigned char* out = mPoolBuoy + sizeof(ChunkH);
 	mPoolBuoy += chunkSize;
 	return out;
 }
 
-int QPaudioBus::Free(char* ptr)
+int QPaudioBus::Free(unsigned char* ptr)
 {
 	ChunkH *leftChunk, *rightChunk;
 	ChunkF *leftFoot, *rightFoot;
@@ -158,7 +158,7 @@ int QPaudioBus::Init(size_t size)
 
 	POOLSIZE = size;
 	mMDsize = sizeof(ChunkF) + sizeof(ChunkH);
-	mPool = (char*)malloc(POOLSIZE);
+	mPool = (unsigned char*)malloc(POOLSIZE);
 	//place pool fences
 	ChunkH header;
 	header.data = synthHeaderData((size_t)0, (size_t)1);

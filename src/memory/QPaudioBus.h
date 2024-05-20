@@ -20,8 +20,8 @@ struct ChunkF {
 class QPaudioBus
 {
 private: 
-	char* mPool;
-	char* mPoolBuoy;
+	unsigned char* mPool;
+	unsigned char* mPoolBuoy;
 	size_t mPoolSize;
 	size_t mMDsize;
 	ChunkH* mFreeListStart;
@@ -73,7 +73,7 @@ private:
 		mFreeListStart = header;
 	}
 
-	int writeChunk(char* target, ChunkH h, ChunkF f) {
+	int writeChunk(unsigned char* target, ChunkH h, ChunkF f) {
 		//write header
 		memcpy(target, &h, sizeof(ChunkH));
 		//move pointer one chunkH up, and one data size up
@@ -82,7 +82,7 @@ private:
 		return 0;
 	}
 
-	char* getFence(int which) {
+	unsigned char* getFence(int which) {
 		if(which == 0) return mPool; 
 		
 		if (which == 1) {
@@ -93,13 +93,13 @@ private:
 public:
 
 	void* Alloc(size_t size);
-	int Free(char* ptr);
+	int Free(unsigned char* ptr);
 	int Init(size_t size);
 
 	int PoolWalk() {
 		int size = 0;
 		std::cout << "sequential walk\n";
-		char* current = getFence(0);
+		unsigned char* current = getFence(0);
 		while (current <= getFence(1)) {
 			ChunkH* temp = reinterpret_cast<ChunkH*>(current);
 			std::cout << "one chunk, size is " << readHeaderSize(temp->data) << " alloc as " << readHeaderBool(temp->data) << "\n";

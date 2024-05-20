@@ -58,7 +58,7 @@ int Syntheloper::ErrHandle() {
 void Syntheloper::customSetUp() {
 	//carrier osc
 	Osc* carrier = new Osc(this, midiToFreq(60), 0.5f,
-		"sin", [](double i)->float {return (float)sin(i * 2 * M_PI); }, 1,1
+		"sin", [](double i)->float {return (float)sin(i * 2 * M_PI); }, 1, 1
 	);
 	//listen to carrier
 	carrier->getScoped();

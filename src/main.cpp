@@ -73,10 +73,10 @@ void AppLoop() {
 
 
 int main() {
-    //CreateSDLWindow();
-    //std::cout << "sdl window creation complete" << std::endl;
+    CreateSDLWindow();
+    std::cout << "sdl window creation complete" << std::endl;
 
-    /*Syntheloper SynthSystem;
+    Syntheloper SynthSystem;
     SynthSystem.customSetUp();
     SynthSystem.openStream();
 
@@ -84,19 +84,4 @@ int main() {
 
 
     SynthSystem.Terminate();
-	*/
-
-    QPaudioBus Bus;
-    size_t size = 280;
-    Bus.Init(size);
-    int* ptr[6];
-    for (int i = 0; i < 6; i++) { ptr[i] = (int*)Bus.Alloc(sizeof(int)); }
-
-    Bus.Free((char*)ptr[0]);
-    Bus.Free((char*)ptr[1]);
-    Bus.Free((char*)ptr[2]);
-    Bus.Free((char*)ptr[4]);
-
-    Bus.PoolWalk();
-    Bus.FreeWalk();
 }
