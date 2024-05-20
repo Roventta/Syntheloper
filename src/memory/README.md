@@ -2,6 +2,8 @@
 
 A pre-allocated memory pool.
 
+Please use unsigend char or std::byte for accessing raw memory
+
 ## Architecture and Life Cycle Overview
 
 Quick Pool allocates a certain amount of memory from the OS on its initiation. When QP is asked for memory by users via `QP::Alloc()`, QP slices a chunk out of its OS-allocated memory and marks it with two metadata structures: `ChunkH` (header of a chunk) and `ChunkF` (footer of a chunk). The metadata structure is located adjacent to the user-required memory chunk. Upon creating new memory chunks, a member variable `mPoolBuoy` is incremented by the size of that chunk (including metadata size) to record the used pool. The start of a memory chunk is always at that moving buoy. The buoy doesn't drop down when one chunk is freed. `mPoolBuoy` is also responsible for verifying the remaining memory of the Pool.
