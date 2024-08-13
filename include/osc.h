@@ -7,9 +7,9 @@
 #include "ugen.h"
 #include "wavetable.h"
 #include "math_synth.h"
-#include "memory/QPaudioBus.h"
+#include "QPaudioBus.h"
 
-//[0]:out, [1]:freq, [2]:amp, [3]:phase; 
+//[0]:out, [1]:freq, [2]:amp, [3]:phase;
 
 class Osc : public Ugen {
 private:
@@ -50,7 +50,7 @@ public:
 		float data_ceiling = mWavetable->readTable((int)ceil(tempP));
 		double temp;
 		float intered_tmp = data_floor + (data_ceiling - data_floor) * (float)modf(tempP, &temp);
-		return tempA * intered_tmp; 
+		return tempA * intered_tmp;
 	}
 
 	void setWavetable(Wavetable* wavetable) { mWavetable = wavetable;};
@@ -82,7 +82,7 @@ public:
 		mCGPointers[1] = &((ChannelGrain*)mBusChannel)->frequency;
 		mCGPointers[2] = &((ChannelGrain*)mBusChannel)->amplitude;
 		mCGPointers[3] = &((ChannelGrain*)mBusChannel)->phase;
-		
+
 	}
 
 protected:

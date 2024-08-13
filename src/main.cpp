@@ -2,9 +2,9 @@
 #include <math.h>
 #include <iostream>
 
-#include "Syntheloper.h"
+#include "../include/Syntheloper.h"
 
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
 #undef main
 
 int CreateSDLWindow() {

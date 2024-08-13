@@ -19,7 +19,7 @@ struct ChunkF {
 
 class QPaudioBus
 {
-private: 
+private:
 	unsigned char* mPool;
 	unsigned char* mPoolBuoy;
 	size_t mPoolSize;
@@ -83,11 +83,8 @@ private:
 	}
 
 	unsigned char* getFence(int which) {
-		if(which == 0) return mPool; 
-		
-		if (which == 1) {
-			return mPool + POOLSIZE - mMDsize;
-		}
+		if(which == 0) return mPool;
+		return mPool + POOLSIZE - mMDsize;
 	}
 
 public:
@@ -135,7 +132,3 @@ public:
 	void BusDestroy() { free(mPool); }
 
 };
-
-
-
-

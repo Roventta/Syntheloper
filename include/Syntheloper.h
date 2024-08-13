@@ -4,12 +4,12 @@
 #include "portaudio.h"
 #include "unordered_map"
 
-#include "Ugen.h"
+#include "ugen.h"
 #include "UgenLink.h"
 #include "wavetable.h"
 
 //memory
-#include "memory/QPaudioBus.h"
+#include "QPaudioBus.h"
 
 
 #define BUS_SIZE (4096)
@@ -18,15 +18,12 @@ class Syntheloper
 {
 	private:
 		QPaudioBus mBus;
-
 		std::vector<Ugen*> mUgens;
 		std::vector<UgenLink*> mUlinks;
-
 		struct CallBackVectors {
 			std::vector<Ugen*>* Ugens_ptr;
 			std::vector<UgenLink*>* Ulinks_ptr;
 		};
-
 		CallBackVectors mCallBackVectors;
 
 		PaStreamParameters outputParameters;
@@ -39,7 +36,7 @@ class Syntheloper
 			const PaStreamCallbackTimeInfo* timeInfo,
 			PaStreamCallbackFlags statusFlags,
 			void* userData) {
-			
+
 			float* out = (float*)outputBuffer;
 			unsigned long i;
 
@@ -50,7 +47,7 @@ class Syntheloper
 
 			for (i = 0; i < framesPerBuffer; i++)
 			{
-				
+
 				for (UgenLink* l : *ugenLinks) { l->commune(); }
 				for (Ugen* u : *ugens) { u->tick(out); }
 				out += 2;
@@ -119,11 +116,10 @@ class Syntheloper
 		}
 
 		void customSetUp();
-		
+
 		QPaudioBus* getBus() { return &mBus; }
 
 		Wavetable* getWvTble(const std::string tablename,
 			float(*writer)(double));
 
 };
-

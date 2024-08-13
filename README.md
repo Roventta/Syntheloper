@@ -43,4 +43,4 @@ Users can modify the Syntheloper::customSetup() function for different features.
 
 ## Installation and Play
 
-Only tested on x64 Windows systems. Make sure to install portaudio.h. I recommend using vcpkg for installing this library and Visual Studio 2022 for playing with the solution.
+Linux compatable only, need to compile portaudio into .a file and paste it to bin/ here

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "QPaudioBus.h"
+#include "../include/QPaudioBus.h"
 #include <cstddef>
 #include <cstdlib>
 
 void* QPaudioBus::Alloc(size_t size)
 {
 	size_t chunkSize = size + mMDsize;
-	
+
 	//check whether can find a slot in free chunk list
 	//first fit algorithm
 	if (mFreeListStart != nullptr) {
@@ -42,10 +42,10 @@ void* QPaudioBus::Alloc(size_t size)
 				leftoverF.size = size;
 				writeChunk((unsigned char*)cur, leftoverH, leftoverF);
 				return (unsigned char*)cur+sizeof(ChunkH);
-			
+
 			}
 		}
-	
+
 	}
 
 	// free list no good, check whether can fit
@@ -100,7 +100,7 @@ int QPaudioBus::Free(unsigned char* ptr)
 mergeLeft:
 	leftFoot = reinterpret_cast<ChunkF*> ((char*)header - sizeof(ChunkF));
 	leftChunk = reinterpret_cast<ChunkH*> ((char*) leftFoot - leftFoot->size - sizeof(ChunkH));
-	if (readHeaderBool(leftChunk->data) == 1) { 
+	if (readHeaderBool(leftChunk->data) == 1) {
 		goto mergeRight; }
 	//merge
 	newLeftSize = readHeaderSize(leftChunk->data);
@@ -126,7 +126,7 @@ mergeRight:
 		//l & r double merge, remove left and right from list and stick merged to start;
 		freeListRemove(rightChunk);
 		freeListRemove(header);
-		
+
 		goto appendstart;
 	}
 	//trivial merge
@@ -145,7 +145,7 @@ FLappend:
 appendstart:
 	//append to the start of the list
 	freeListAppend(header);
-	
+
 end:
 	return 0;
 }

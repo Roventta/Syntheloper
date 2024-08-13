@@ -1,5 +1,5 @@
 #pragma once
-#include "memory/QPaudioBus.h"
+#include "QPaudioBus.h"
 #include <array>
 
 #define MaxListener 5
@@ -9,8 +9,8 @@ class Ugen {
 public:
 	virtual void tick(float* buf) {};
 	virtual float readCurrentData() { return 0; };
-	Ugen() { 
-		mBusChannel = nullptr; 
+	Ugen() {
+		mBusChannel = nullptr;
 		mChanneled = 0;
 	};
 	~Ugen() {};

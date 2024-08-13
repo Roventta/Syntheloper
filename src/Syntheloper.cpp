@@ -1,10 +1,9 @@
-#include "Osc.h"
-#include "ADSRenv.h"
-#include "math_synth.h"
+#include "../include/osc.h"
+#include "../include/math_synth.h"
 
-#include "Syntheloper.h"
+#include "../include/Syntheloper.h"
 
-Syntheloper::Syntheloper() { 
+Syntheloper::Syntheloper() {
 	err = 0;
 	mBus.Init((size_t)BUS_SIZE);
 	mCallBackVectors.Ugens_ptr = &mUgens;
@@ -23,7 +22,7 @@ Syntheloper::Syntheloper() {
 	outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
 	outputParameters.hostApiSpecificStreamInfo = NULL;
 
-	return; 
+	return;
 };
 
 
@@ -40,7 +39,7 @@ int Syntheloper::Terminate() {
 	for (Ugen* u : mUgens) { free(u); }
 	for (UgenLink* l : mUlinks) { free(l); }
 	//release wavetables
-	for (auto wtPair : mWvTbls) { 
+	for (auto wtPair : mWvTbls) {
 		wtPair.second->releaseRawData();
 		free(wtPair.second); }
 
@@ -63,9 +62,9 @@ void Syntheloper::customSetUp() {
 	//listen to carrier
 	carrier->getScoped();
 
-	// wave table generation function can be ignored, as 
+	// wave table generation function can be omitted, as
 	// sin table is already created
-	Osc* mod = new Osc(this, 1.0f, 0.5f,
+	Osc* mod = new Osc(this, 8.0f, 1.0f,
 		"sin", nullptr, 1, 1
 	);
 
@@ -92,7 +91,7 @@ Wavetable* Syntheloper::getWvTble(const std::string tablename,
 	{
 		wt = iter->second;
 	}
-	//add new wvtable 
+	//add new wvtable
 	else
 	{
 		wt = new Wavetable(mWaveTableSize, writer);

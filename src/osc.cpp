@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include <../include/stdio.h>
 #include <math.h>
 
-#include "osc.h"
+#include "../include/osc.h"
 
 Osc::Osc(float freq, float amp) {
 	mFrequency = freq; mAmplitude = amp;
@@ -11,7 +11,7 @@ Osc::Osc(float freq, float amp) {
 	mWavetable = nullptr;
 }
 
-Osc::Osc(Syntheloper* sys, float freq, float amp, 
+Osc::Osc(Syntheloper* sys, float freq, float amp,
 	std::string tblname,float(*writer)(double),
 	bool onbus, bool alone)
 {
@@ -59,7 +59,7 @@ void Osc::tick(float* buf) {
 		mPhase = tempP;
 	}
 
-	if (mScoped) { *buf = out; *(buf + 1) = out; 
+	if (mScoped) { *buf = out; *(buf + 1) = out;
 	}
 
 	return;

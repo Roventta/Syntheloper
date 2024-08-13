@@ -1,5 +1,5 @@
-#include "ADSRenv.h"
-#include "Math_.h"
+#include "../include/ADSRenv.h"
+#include "../include/Math_.h"
 
 void ADSRenv::supress() {
 	for (size_t i=0; i < 3; i++) {
@@ -14,7 +14,7 @@ ADSRenv::ADSRenv(Vector2 a, Vector2 b, Vector2 c, float totalDuration) {
 	Vector2 temp;
 	if (a.x < 0 || a.y < 0) goto sanityCheckFail;
 	mTurns[0] = a;
-	//second 
+	//second
 	if (b.x < a.x || b.y < 0) goto sanityCheckFail;
 	mTurns[1] = b;
 	//third
@@ -52,7 +52,7 @@ void ADSRenv::tick(float* buf) {
 
 float ADSRenv::readCurrentData() {
 	if (mPhase < 0 || mPhase >= mDuration) { return 0.0; }
-	
+
 	std::array<Vector2, 2> activatedSegment;
 
 	//determine which segements currently
@@ -72,7 +72,7 @@ float ADSRenv::readCurrentData() {
 
 foundSegment:
 	//lerp between segments by f:=mphase-seg_start
-	Vector2 interp = Vector2::Lerp(activatedSegment[0], activatedSegment[1], 
+	Vector2 interp = Vector2::Lerp(activatedSegment[0], activatedSegment[1],
 								  (mPhase-activatedSegment[0].x)/(activatedSegment[1].x-activatedSegment[0].x));
 	return interp.y;
 }
