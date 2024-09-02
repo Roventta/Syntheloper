@@ -56,30 +56,11 @@ int Syntheloper::ErrHandle() {
 
 void Syntheloper::customSetUp() {
 	//carrier osc
-	Osc* carrier = new Osc(this, midiToFreq(60), 0.5f,
-		"sin", [](double i)->float {return (float)sin(i * 2 * M_PI); }, 1, 1
+	Osc* sin1 = new Osc(this, midiToFreq(60), 0.5f,
+		"sin", [](double i)->float {return (float)sin(i * 2 * M_PI); }
 	);
-	//listen to carrier
-	carrier->getScoped();
-
-	// wave table generation function can be omitted, as
-	// sin table is already created
-	Osc* mod = new Osc(this, 8.0f, 1.0f,
-		"sin", nullptr, 1, 1
-	);
-
-	//raise the mod ugen output by its amplitude's half
-	UgenLink* link1 = new UgenLink(mod->mCGPointers[0], mod->mCGPointers[2], sizeof(float),
-		[](float t, float s)->float {return (t + s) / 2; }
-	);
-	this->AddUgenLink(link1);
-	//modify the carrier's amp via mod's out
-	UgenLink* link2 = new UgenLink(carrier->mCGPointers[2], mod->mCGPointers[0], sizeof(float));
-	this->AddUgenLink(link2);
-
+	sin1->Scoped=true;
 }
-
-
 
 Wavetable* Syntheloper::getWvTble(const std::string tablename,
 	float(*writer)(double))

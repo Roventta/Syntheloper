@@ -56,8 +56,6 @@ class Syntheloper
 			return paContinue;
 		}
 
-		Ugen* mScopedUgen = nullptr;
-
 		std::unordered_map<std::string, Wavetable*> mWvTbls;
 
 		static void StreamFinished(void* userData)
@@ -87,11 +85,6 @@ class Syntheloper
 
 		void AddUgenLink(UgenLink* ul) {
 			mCallBackVectors.Ulinks_ptr->push_back(ul);
-		}
-
-		void setScopedUgen(Ugen* ptr) {
-			mScopedUgen = ptr;
-			ptr->getScoped();
 		}
 
 		int openStream() {

@@ -1,66 +1,36 @@
 #include <../include/stdio.h>
+#include <iostream>
 #include <math.h>
-
 #include "../include/osc.h"
 
-Osc::Osc(float freq, float amp) {
-	mFrequency = freq; mAmplitude = amp;
-	mPhase = 0.0f;
-
-	mSystem = nullptr;
-	mWavetable = nullptr;
-}
-
 Osc::Osc(Syntheloper* sys, float freq, float amp,
-	std::string tblname,float(*writer)(double),
-	bool onbus, bool alone)
+	std::string tblname,float(*writer)(double)
+	// Ugen's channelGrain has four floars [0]:out, [1]:phase, [2]:freq, [3]:amp;
+	) : Ugen(sys->getBus(), 4)
 {
-	mFrequency = freq; mAmplitude = amp;
-	mPhase = 0.0f;
-
 	mSystem = sys;
 	mWavetable = sys->getWvTble(tblname, writer);
-
-	if (onbus) { this->initBusChannel(sys->getBus());}
-	if (alone) { mSystem->AddUgen(this); }
+	mSystem->AddUgen(this);
+	this->mChannelGrain.Set(1, freq);
+	this->mChannelGrain.Set(2, amp);
+	this->mChannelGrain.Set(3, 0);
 }
 
 //assume samplerate 44100
 void Osc::tick(float* buf) {
 	if (mWavetable == nullptr) { return; }
-
-	float tempF, tempA, tempP;
-
-	if (mChanneled) {
-		//struct ChannelGrain *temp = (ChannelGrain*)mBusChannel;
-		readFromBus(&tempF, mCGPointers[1], sizeof(float));
-		readFromBus(&tempA, mCGPointers[2], sizeof(float));
-		readFromBus(&tempP, mCGPointers[3], sizeof(float));
-	}
-	else {
-		tempF = mFrequency;
-		tempA = mAmplitude;
-		tempP = mPhase;
-	}
-
+	//TODO: figure out which comes first, tick or caculate out
+	//and add calculate out here
+	float tempF = this->mChannelGrain.Get(1);
+	float tempA = this->mChannelGrain.Get(2);
+	float tempP = this->mChannelGrain.Get(3);
+	float tempO = this->calcCurrentData();
+	this->mChannelGrain.Set(0,tempO);
 	int tablesize_tmp = mWavetable->getTableSize();
-	float phase_increment = (double)tablesize_tmp / 44100.0 * tempF;
+	float phase_increment = (double)tablesize_tmp/44100.0 * tempF;
 	tempP += phase_increment;
-	//int phaseRound = (int)round(mPhase);
-	if (tempP >= tablesize_tmp) { tempP -= tablesize_tmp; }
-	float out = readCurrentData();
-	if (mChanneled) {
-		struct ChannelGrain* temp = (ChannelGrain*)mBusChannel;
-		writeToBus(mCGPointers[3], &tempP, sizeof(float));
-		writeToBus(mCGPointers[0], &out, sizeof(float));
-	}
-	else
-	{
-		mPhase = tempP;
-	}
-
-	if (mScoped) { *buf = out; *(buf + 1) = out;
-	}
-
+	if (tempP >= tablesize_tmp) { tempP -= tablesize_tmp;}
+	this->mChannelGrain.Set(3, tempP);
+	if(Scoped){*buf = tempO; *(buf+1)=tempO;}
 	return;
 }

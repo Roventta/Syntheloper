@@ -4,8 +4,8 @@ CXX_FLAGS := -Wall -Wextra -std=c++17 -ggdb
 BIN     := bin
 SRC     := src
 INCLUDE := include
-LIB     := lib
-LIBRARIES   := -lSDL2 $(LIB)/libportaudio.a -lrt -lm -lasound -ljack -pthread
+LIB     := ../lib
+LIBRARIES   := -lSDL2 -lrt -lm -lasound -ljack -lportaudio -pthread
 EXECUTABLE  := main
 
 all: $(BIN)/$(EXECUTABLE)
@@ -22,4 +22,3 @@ $(BIN)/$(EXECUTABLE): $(OBJECTS) $(SRC)/*.cpp
 clean:
 	@echo "🧹 Clearing..."
 	-rm $(BIN)/*
-
