@@ -21,9 +21,9 @@ class QPBusChannelGrain{
      mBus->Free((unsigned char*) mChannelStart);
   }
 
-  float Get(size_t index){
+  float* Get(size_t index){
       if(mChannelStart && index < mSize){
-          return mChannelStart[index];
+          return &mChannelStart[index];
       }
       return 0;
   }

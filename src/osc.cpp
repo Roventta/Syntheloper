@@ -1,5 +1,4 @@
 #include <../include/stdio.h>
-#include <iostream>
 #include <math.h>
 #include "../include/osc.h"
 
@@ -21,9 +20,9 @@ void Osc::tick(float* buf) {
 	if (mWavetable == nullptr) { return; }
 	//TODO: figure out which comes first, tick or caculate out
 	//and add calculate out here
-	float tempF = this->mChannelGrain.Get(1);
-	float tempA = this->mChannelGrain.Get(2);
-	float tempP = this->mChannelGrain.Get(3);
+	float tempF = *this->mChannelGrain.Get(1);
+	float tempA = *this->mChannelGrain.Get(2);
+	float tempP = *this->mChannelGrain.Get(3);
 	float tempO = this->calcCurrentData();
 	this->mChannelGrain.Set(0,tempO);
 	int tablesize_tmp = mWavetable->getTableSize();

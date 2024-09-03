@@ -12,6 +12,7 @@
 //[0]:out, [1]:freq, [2]:amp, [3]:phase;
 
 class Osc : protected Ugen {
+friend Syntheloper;
 private:
 	Wavetable* mWavetable;
 	Syntheloper* mSystem;
@@ -25,9 +26,9 @@ public:
 
 	float calcCurrentData() override{
 		//float tempF, tempA, tempP;
-		float tempF = this->mChannelGrain.Get(1);
-		float tempA = this->mChannelGrain.Get(2);
-		float tempP = this->mChannelGrain.Get(3);
+		float tempF = *this->mChannelGrain.Get(1);
+		float tempA = *this->mChannelGrain.Get(2);
+		float tempP = *this->mChannelGrain.Get(3);
 
 		float data_floor = mWavetable->readTable((int)floor(tempP));
 		float data_ceiling = mWavetable->readTable((int)ceil(tempP));

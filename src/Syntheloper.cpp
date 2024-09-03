@@ -1,9 +1,9 @@
 #include "../include/osc.h"
 #include "../include/math_synth.h"
-
+#include "../include/QPCGInstruction.h"
 #include "../include/Syntheloper.h"
 
-Syntheloper::Syntheloper() {
+Syntheloper::Syntheloper():mBusMsger() {
 	err = 0;
 	mBus.Init((size_t)BUS_SIZE);
 	mCallBackVectors.Ugens_ptr = &mUgens;
@@ -25,6 +25,45 @@ Syntheloper::Syntheloper() {
 	return;
 };
 
+static int CallBack(const void* inputBuffer, void* outputBuffer,
+			unsigned long framesPerBuffer,
+			const PaStreamCallbackTimeInfo* timeInfo,
+			PaStreamCallbackFlags statusFlags,
+			void* userData) {
+			float* out = (float*)outputBuffer;
+			unsigned long i;
+			Syntheloper::CallBackVectors* objVectors = reinterpret_cast<Syntheloper::CallBackVectors*>(userData);
+			std::vector<Ugen*>* ugens = objVectors->Ugens_ptr;
+			std::vector<QPCGInstruction*>* ugenLinks = objVectors->Ulinks_ptr;
+			for (i = 0; i < framesPerBuffer; i++)
+			{
+				for (QPCGInstruction* l : *ugenLinks) { l->commune(); }
+				for (Ugen* u : *ugens) { u->tick(out); }
+				out += 2;
+			}
+			return paContinue;
+		}
+
+int Syntheloper::openStream(){
+    err = Pa_OpenStream(
+				&stream,
+				NULL, /* no input */
+				&outputParameters,
+				mSampleRate,
+				mFramesPerBuffer,
+				paClipOff,/* we won't output out of range samples so don't bother clipping them */
+				CallBack,
+				&mCallBackVectors);
+			if (err != paNoError) ErrHandle();
+
+			err = Pa_SetStreamFinishedCallback(stream, &StreamFinished);
+			if (err != paNoError) ErrHandle();
+
+			err = Pa_StartStream(stream);
+			if (err != paNoError) ErrHandle();
+
+			return err;
+}
 
 int Syntheloper::Terminate() {
 	err = Pa_StopStream(stream);
@@ -37,7 +76,7 @@ int Syntheloper::Terminate() {
 	printf("Test finished.\n");
 
 	for (Ugen* u : mUgens) { free(u); }
-	for (UgenLink* l : mUlinks) { free(l); }
+	for (QPCGInstruction* l : mUlinks) { free(l); }
 	//release wavetables
 	for (auto wtPair : mWvTbls) {
 		wtPair.second->releaseRawData();
@@ -60,6 +99,10 @@ void Syntheloper::customSetUp() {
 		"sin", [](double i)->float {return (float)sin(i * 2 * M_PI); }
 	);
 	sin1->Scoped=true;
+
+	//QPCGInstruction* add1 = new QPCGInstruction(this, this->mBusMsger.Get(sin1, 2),
+	//this->mBusMsger.Get(sin1, 2), this->mBusMsger.Get(sin1, 2),
+	//[](float l, float r)->float{return l+100;});
 }
 
 Wavetable* Syntheloper::getWvTble(const std::string tablename,
