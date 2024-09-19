@@ -95,14 +95,18 @@ int Syntheloper::ErrHandle() {
 
 void Syntheloper::customSetUp() {
 	//carrier osc
-	Osc* sin1 = new Osc(this, midiToFreq(60), 0.5f,
+	Osc* carrier = new Osc(this, midiToFreq(60), 0.5f,
 		"sin", [](double i)->float {return (float)sin(i * 2 * M_PI); }
 	);
-	sin1->Scoped=true;
+	carrier->Scoped=true;
+	Osc* modulator = new Osc(this, 8, 1.0f, "sin", nullptr);
+	QPCGInstruction* mod_raise = new QPCGInstruction(this, this->mBusMsger.Get(modulator, 0),
+	this->mBusMsger.Get(modulator, 2), this->mBusMsger.Get(modulator, 0),
+	[](float l, float r)->float{return (l+r)/2;});
 
-	//QPCGInstruction* add1 = new QPCGInstruction(this, this->mBusMsger.Get(sin1, 2),
-	//this->mBusMsger.Get(sin1, 2), this->mBusMsger.Get(sin1, 2),
-	//[](float l, float r)->float{return l+100;});
+	QPCGInstruction* add1 = new QPCGInstruction(this, this->mBusMsger.Get(carrier, 2),
+	this->mBusMsger.Get(modulator, 0), this->mBusMsger.Get(carrier, 2),
+	[](float l, float r)->float{return r;});
 }
 
 Wavetable* Syntheloper::getWvTble(const std::string tablename,
