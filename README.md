@@ -43,4 +43,4 @@ Users can modify the Syntheloper::customSetup() function for different features.
 
 ## Installation and Play
 
-Linux compatable only, need to compile portaudio into .a file and paste it to bin/ here
+Linux compatable only, need to compile portaudio into .a file and paste it to lib/ here
